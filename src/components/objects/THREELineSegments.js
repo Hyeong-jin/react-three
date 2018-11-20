@@ -2,20 +2,19 @@ import * as THREE from 'three';
 import { createTHREEComponent } from '../../Utils';
 import THREEObject3DMixin from '../../mixins/THREEObject3DMixin';
 
-var THREEPointCloud = createTHREEComponent(
-    'PointCloud',
+var THREELineSegments = createTHREEComponent(
+    'LineSegments',
     THREEObject3DMixin,
     {
         createTHREEObject: function() {
-            return new THREE.PointCloud(new THREE.Geometry());
+            return new THREE.LineSegments();
         },
 
         applySpecificTHREEProps: function(oldProps, newProps) {
-            this.transferTHREEObject3DPropsByName(oldProps, newProps,
-                ['geometry','material','frustumCulled','sortParticles']);
+            this.transferTHREEObject3DPropsByName(oldProps,newProps,
+                ['geometry','material','mode']);
         }
     }
-
 );
 
-export default THREEPointCloud;
+export default THREELineSegments;

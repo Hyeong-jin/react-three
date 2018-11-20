@@ -1,13 +1,13 @@
-var THREE = require('three');
-var createTHREEComponent = require('../../Utils').createTHREEComponent;
-var THREEObject3DMixin = require('../../mixins/THREEObject3DMixin');
+import * as THREE from 'three';
+import { createTHREEComponent } from '../../Utils';
+import THREEObject3DMixin from '../../mixins/THREEObject3DMixin';
 
 var THREELine = createTHREEComponent(
     'Line',
     THREEObject3DMixin,
     {
         createTHREEObject: function() {
-            return new THREE.Line(new THREE.Geometry());
+            return new THREE.Line();
         },
 
         applySpecificTHREEProps: function(oldProps, newProps) {
@@ -16,4 +16,5 @@ var THREELine = createTHREEComponent(
         }
     }
 );
-module.exports = THREELine;
+
+export default THREELine;

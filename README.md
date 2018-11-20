@@ -1,11 +1,13 @@
 react-three
 ===========
 
-[![Build Status](https://travis-ci.org/Izzimach/react-three.svg?branch=master)](https://travis-ci.org/Izzimach/react-three)
-
 Create/control a [three.js](http://threejs.org/) canvas using [React](https://github.com/facebook/react).
 
 To use React for drawing 2D using WebGL, try [react-pixi](https://github.com/Izzimach/react-pixi).
+
+If you want a high-performance 3D renderer or automatic managing of resources like geometry and materials
+then you should look at [react-three-renderer](https://github.com/toxicFork/react-three-renderer).
+Look [here](https://github.com/toxicFork/react-three-renderer/issues/28) for more details.
 
 You can view an interactive demo (hopefully) at [my github demo page](http://izzimach.github.io/demos/react-three-interactive/index.html). This demo is also available as a standalone project at [r3test](https://github.com/Izzimach/r3test/)
 
@@ -15,7 +17,7 @@ Usage
 An example render function from the examples:
 
 
-```
+```js
 render: function() {
   var MainCameraElement = React.createElement(
     ReactTHREE.PerspectiveCamera,
@@ -24,33 +26,41 @@ render: function() {
      position:new THREE.Vector3(0,0,600), lookat:new THREE.Vector3(0,0,0)});
 
   return React.createElement(
-      ReactTHREE.Scene,
-      {width:this.props.width, height:this.props.height, camera:'maincamera'},
-      MainCameraElement,
-      React.createElement(Cupcake, this.props.cupcakedata)
+      ReactTHREE.Renderer,
+      {width:this.props.width, height:this.props.height},
+      React.createElement(
+          ReactTHREE.Scene,
+          {width:this.props.width, height:this.props.height, camera:'maincamera'},
+          MainCameraElement,
+          React.createElement(Cupcake, this.props.cupcakedata)
+      )
   );
 }
 ```
 
 or if you want to use JSX,
 
-```
-render: function() {
-  var aspectratio = this.props.width / this.props.height;
-  var cameraprops = {fov:75, aspect:aspectratio, near:1, far:5000,
-    position:new THREE.Vector3(0,0,600), lookat:new THREE.Vector3(0,0,0)};
+```js
+  render: function() {
+    var aspectratio = this.props.width / this.props.height;
+    var cameraprops = {fov : 75, aspect : aspectratio, 
+                       near : 1, far : 5000, 
+                       position : new THREE.Vector3(0,0,600), 
+                       lookat : new THREE.Vector3(0,0,0)};
 
-  return  <Scene width={this.props.width} height={this.props.height} camera="maincamera">
+    return <Renderer width={this.props.width} height={this.props.height}>
+        <Scene width={this.props.width} height={this.props.height} camera="maincamera">
             <PerspectiveCamera name="maincamera" {...cameraprops} />
             <Cupcake {...this.props.cupcakedata} />
-          </Scene>;
-}
+        </Scene>
+    </Renderer>;
+  }
 ```
 
 Install and Use with npm
 ========================
 
-The current version of react-three is 0.7.0 which uses React 0.14.
+The current version of react-three is 0.9 which uses React 15.
 
 If you are building a project with a `package.json` file you can
 
@@ -132,13 +142,19 @@ where `p`,`g`, and `m` are the same values you would have set in a three.js Mesh
 Extra Props
 -----------
 
-The `THREEScene` component has a few extra props that aren't in the standard `Scene` object:
+The `THREERenderer` component has a few extra props that aren't in the standard `Renderer` object:
 
-* `camera`: specifies the name of the camera to use when rendering. The default is `maincamera`
-* `background`: is the background color specified as a number, usually hex (for example `0x202020`)
 * `enableRapidRender`: if set to `true` will re-render the scene every frame even if nothing was modified by React. This is for handling non-static THREE entities such as animated meshes and particle systems.
-* `pointerEvents`: an array of strings containing the names of events that will be processed and forwarded to objects in the scene. The code uses ray casting to find which object gets the event. For example `['onClick', 'onMouseMove']` will send mouse clicks and move events to whatever object is under the mouse. To handle events, add handler functions as props to your component with `3D` appended - so use the `onClick3D` prop to handle mouse clicks on your object. See the 'interactive' example for more details.
+* `background`: is the background color specified as a number, usually hex (for example `0x202020`). This basically maps to the clear color.
+* `customRender` is a user-defined function that can be used to intercept and modify the render path. It takes arguments `(renderer, scene, camera)` for each scene. Normal behavior would be to call `renderer(scene, camera)` but you can do what you want. Be sure to handle the case of multiple scenes!
+
+
+Also, the `THREEScene` component has a few extra props that aren't in the standard `Scene` object:
+
+* `width`, `height` : these are passed into the renderer but also need to be passed in each scene in order to configure the camera.
+* `camera`: specifies the name of the camera to use when rendering. The default is `maincamera`
 * `orbitControls`: you can specify an orbit controller (typically `THREE.OrbitControls`) for the scene. Note that this consumes mouse input so will not work well with `pointerEvents`. The 'orbitcontrols' example shows how to use this prop.
+* `pointerEvents`: an array of strings containing the names of events that will be processed and forwarded to objects in the scene. The code uses ray casting to find which object gets the event. For example `['onClick', 'onMouseMove']` will send mouse clicks and move events to whatever object is under the mouse. To handle events, add handler functions as props to your component with `3D` appended - so use the `onClick3D` prop to handle mouse clicks on your object. See the 'interactive' example for more details.
 
 
 
@@ -148,7 +164,7 @@ Examples
 Examples are set up in the examples/ directory. You can run
 
 ```
-npm run dev
+npm run examples
 ```
 
 Then open the example index in your browser at `http://localhost:8080/`

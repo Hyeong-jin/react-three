@@ -7,11 +7,17 @@ var _ = require('lodash');
 var defaultconfig = require('./webpack.config.js');
 var examplesconfig = _.cloneDeep(defaultconfig);
 
-examplesconfig.entry = path.join(__dirname, "examples", "jsxtransform", "jsxtransform.jsx");
+var examplesdirectory = path.join(__dirname, "examples");
+
+examplesconfig.entry = {
+  jsxtransform: path.join(examplesdirectory, "jsxtransform", "jsxtransform.jsx"),
+  shader: path.join(examplesdirectory, 'shader', 'shader.jsx')
+};
+
 examplesconfig.output = {
-    path: path.join(__dirname, "examples/jsxtransform"),
-    filename: "jsxtransform.js",
-    publicPath: "/examples/jsxtransform/"
+  path: path.join(__dirname, "examples", "build"),
+  filename: "[name].js",
+  publicPath: "/examples/build/"
 };
 
 // add a jsx processor
@@ -19,8 +25,15 @@ examplesconfig.module.loaders.push(
   {
     test: /\.jsx$/,
     loader: 'babel',
-    include: path.join(__dirname, 'examples', 'jsxtransform')
+    include: path.join(__dirname, 'examples'),
+    query: {
+      cacheDirectory: true,
+      presets: ['es2015', 'stage-2', 'react'],
+      plugins: ['transform-runtime']
+    }
   }
 );
+
+examplesconfig.devtool = 'cheap-module-eval-source-map',
 
 module.exports = examplesconfig;

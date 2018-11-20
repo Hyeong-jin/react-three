@@ -8,12 +8,11 @@
 
 "use strict";
 
-var ReactCompositeComponent = require('react/lib/ReactCompositeComponent');
-var ReactCompositeComponentMixin = ReactCompositeComponent.Mixin;
-var ReactReconciler = require('react/lib/ReactReconciler');
+import ReactCompositeComponent from 'react-dom/lib/ReactCompositeComponent';
+import ReactReconciler from 'react-dom/lib/ReactReconciler';
 
-var shouldUpdateReactComponent = require('react/lib/shouldUpdateReactComponent');
-var warning = require('fbjs/lib/warning');
+import shouldUpdateReactComponent from 'react-dom/lib/shouldUpdateReactComponent';
+import warning from 'fbjs/lib/warning';
 
 //
 // Composite components don't have an Object3D. So we have to do some work to find
@@ -41,7 +40,7 @@ function findObject3DChild(componentinstance) {
 // This modified version of updateRenderedComponent will
 // manage Object3D nodes instead of HTML markup
 //
-var old_updateRenderedComponent = ReactCompositeComponentMixin._updateRenderedComponent;
+var old_updateRenderedComponent = ReactCompositeComponent._updateRenderedComponent;
 
 var ReactTHREE_updateRenderedComponent = function(transaction, context) {
   var prevComponentInstance = this._renderedComponent;
@@ -154,5 +153,5 @@ var ReactTHREEMonkeyPatch = function() {
   }
 };
 
-module.exports = ReactTHREEMonkeyPatch;
+export default ReactTHREEMonkeyPatch;
 
